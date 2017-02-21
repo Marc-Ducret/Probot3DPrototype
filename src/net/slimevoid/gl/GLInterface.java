@@ -1,4 +1,4 @@
-package net.slimevoid.probot;
+package net.slimevoid.gl;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.GLFW_FALSE;
@@ -38,20 +38,7 @@ import static org.lwjgl.opengl.GL15.GL_STATIC_DRAW;
 import static org.lwjgl.opengl.GL15.glBindBuffer;
 import static org.lwjgl.opengl.GL15.glBufferData;
 import static org.lwjgl.opengl.GL15.glGenBuffers;
-import static org.lwjgl.opengl.GL20.GL_COMPILE_STATUS;
-import static org.lwjgl.opengl.GL20.GL_FRAGMENT_SHADER;
-import static org.lwjgl.opengl.GL20.GL_LINK_STATUS;
-import static org.lwjgl.opengl.GL20.GL_VERTEX_SHADER;
-import static org.lwjgl.opengl.GL20.glAttachShader;
-import static org.lwjgl.opengl.GL20.glCompileShader;
-import static org.lwjgl.opengl.GL20.glCreateProgram;
-import static org.lwjgl.opengl.GL20.glCreateShader;
 import static org.lwjgl.opengl.GL20.glEnableVertexAttribArray;
-import static org.lwjgl.opengl.GL20.glGetProgramInfoLog;
-import static org.lwjgl.opengl.GL20.glGetProgrami;
-import static org.lwjgl.opengl.GL20.glGetShaderi;
-import static org.lwjgl.opengl.GL20.glLinkProgram;
-import static org.lwjgl.opengl.GL20.glShaderSource;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 import static org.lwjgl.opengl.GL20.glVertexAttribPointer;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
@@ -86,7 +73,6 @@ public class GLInterface {
 		
 		System.out.println("Starting LWJGL " + Version.getVersion());
 		new Thread(new Runnable() {
-			
 			@Override
 			public void run() {
 				init();
@@ -137,20 +123,7 @@ public class GLInterface {
 		glClearColor(0.8f, 0.8f, 0.9f, 0.0f);
 		
 		//TEST
-		int vertShad = glCreateShader(GL_VERTEX_SHADER);
-		glShaderSource(vertShad, "#version 330 core\n layout (location = 0) in vec3 position; void main() { gl_Position = vec4(position.x, position.y, position.z, 1.0f); }");
-		glCompileShader(vertShad);
-		System.out.println("vert: "+glGetShaderi(vertShad, GL_COMPILE_STATUS));
-		int fragShad = glCreateShader(GL_FRAGMENT_SHADER);
-		glShaderSource(fragShad, "#version 330 core\n out vec4 color; void main() { color = vec4(1.0f, 0.5f, 0.2f, 1.0f); }");
-		glCompileShader(fragShad);
-		System.out.println("frag: "+glGetShaderi(fragShad, GL_COMPILE_STATUS));
-		int shad = glCreateProgram();
-		glAttachShader(shad, vertShad);
-		glAttachShader(shad, fragShad);
-		glLinkProgram(shad);
-		System.out.println("prog: "+glGetProgrami(shad, GL_LINK_STATUS));
-		if(glGetProgrami(shad, GL_LINK_STATUS) == 0) System.out.println(glGetProgramInfoLog(shad));
+		ShaderManager sm = new ShaderManager("");
 		
 		int vao = glGenVertexArrays();
 		int vbo = glGenBuffers();
@@ -168,11 +141,13 @@ public class GLInterface {
 
 		// Run the rendering loop until the user has attempted to close
 		// the window or has pressed the ESCAPE key.
+		int ct = 0;
 		while ( !glfwWindowShouldClose(window) ) {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
 			//TEST
-			glUseProgram(shad);
+			ct++;
+			glUseProgram(sm.getProgram("test"+((ct/60)%2)));
 			glBindVertexArray(vao);
 			glDrawArrays(GL_TRIANGLES, 0, 3);
 			glBindVertexArray(0);
