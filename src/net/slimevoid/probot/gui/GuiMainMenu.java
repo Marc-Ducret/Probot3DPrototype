@@ -17,7 +17,7 @@ public class GuiMainMenu extends Gui {
 	
 	public GuiMainMenu() {
 		buttonFight = new Button("Fight", () -> {
-			System.out.println("Fight!");//TODO rm
+			System.out.println("Fight!"); //TODO rm
 			NetworkEngineClient net = new NetworkEngineClient();
 			if(!net.connect("89.156.241.115", 8004)) {
 				System.out.println("Connection unsuccessful :("); //TODO addr?

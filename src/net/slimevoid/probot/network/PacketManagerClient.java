@@ -3,8 +3,10 @@ package net.slimevoid.probot.network;
 import java.io.IOException;
 import java.net.Socket;
 
+import net.slimevoid.gl.GLInterface;
 import net.slimevoid.network.inputsync.InputSyncSocket;
 import net.slimevoid.network.inputsync.InputSyncSocket.ClientType;
+import net.slimevoid.probot.gui.GuiPong;
 import net.slimevoid.probot.network.packet.Packet03Peer;
 
 public class PacketManagerClient extends PacketManager {
@@ -27,7 +29,11 @@ public class PacketManagerClient extends PacketManager {
 										packet.getPeerPort(), 
 										socket.getLocalPort(),
 										ClientType.values()[packet.getPlayerNumber()-1]);
-    		System.out.println("Connection: "+sok.connect(20));
+    		if(sok.connect(20)) {
+    			GLInterface.changeGui(new GuiPong(sok));
+    		} else {
+    			System.out.println("P2P connection failed :(");//TODO rm
+    		}
     	}).start();
     }
     
