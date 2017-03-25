@@ -17,7 +17,6 @@ public class GuiMainMenu extends Gui {
 	
 	public GuiMainMenu() {
 		buttonFight = new Button("Fight", () -> {
-			System.out.println("Fight!"); //TODO rm
 			NetworkEngineClient net = new NetworkEngineClient();
 			if(!net.connect("89.156.241.115", 8004)) {
 				System.out.println("Connection unsuccessful :("); //TODO addr?
@@ -28,7 +27,7 @@ public class GuiMainMenu extends Gui {
 			net.startUpdateThread();
 		});
 		buttonBuild = new Button("Build", () -> {
-			System.out.println("Build!");
+			GLInterface.changeGui(new GuiBulletTest());
 		});
 		buttonFight.constrain(Component.N, null, Component.N, -300);
 		buttonFight.constrain(Component.W, null, Component.W, GLInterface.windowWidth / 2 - bW / 2);
